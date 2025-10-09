@@ -1,1 +1,35 @@
 -- Active: 1759236939102@@127.0.0.1@5432@my_db
+CREATE TABLE  IF NOT EXISTS users(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    password VARCHAR(120) NOT NULL
+);
+
+
+
+CREATE TABLE IF NOT EXISTS boards(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(120) NOT NULL,
+    user_id INT REFERENCES users(id) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE IF NOT EXISTS columns(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(120) NOT NULL,
+    order INT,
+    board_id INT REFERENCES boards(id) ON DELETE CASCADE
+)
+
+
+CREATE TABLE IF NOT EXISTS tasks(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(120) NOT NULL,
+    order INT,
+    description TEXT,
+    user_id INT REFERENCES users(id) ON DELETE SET NULL,
+    board_id INT REFERENCES boards(id) ON DELETE CASCADE,
+    column_id INT REFERENCES columns(id) ON DELETE CASCADE
+);
