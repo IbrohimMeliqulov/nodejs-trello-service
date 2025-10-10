@@ -1,6 +1,7 @@
 import pool from "../config/database.js";
-import * as bcrypt from "bcrypt"
-import { RegisterUser,UpdateUservalidation } from "../middleware/validation.js";
+import * as bcrypt from "bcrypt";
+
+
 
 
 const setup =async (req,res,next)=>{
@@ -11,14 +12,12 @@ const setup =async (req,res,next)=>{
     }
 }
 
-const register=async(req,res,next)=>{
+const register=async(req,res)=>{
     try{
-        const {error,value}=RegisterUser(req.body)
-        if(error) return res.status(422).send(error.details[0].message)
-        // const all=(await pool.query(`SELECT * FROM users`)).rows
-        // const foundedUser=all.findIndex(user=>user.email===email)
-        // if(foundedUser!==-1) return res.status(404).send({message:`This email exists. You registered before`})
-        const {name,email,password}=value
+        // const {error,value}=RegisterUser(req.body)
+        // if(error) return res.status(422).send(error.details[0].message)
+        // const {name,email,password}=value
+        const {name,email,password}=req.body
         const hashPassword=await bcrypt.hash(password,10)
         const {rows}=await pool.query(`INSERT INTO users(name,email,password) VALUES($1,$2,$3) RETURNING*`,[name,email,hashPassword])
         return res.status(200).send({
@@ -27,12 +26,12 @@ const register=async(req,res,next)=>{
             data:rows[0]
         })
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
 
-const login=async(req,res,next)=>{
+const login=async(req,res)=>{
     try{
         const {email,password}=req.body
         const {rows}=await pool.query(`SELECT * FROM users WHERE email=$1`,[email])
@@ -42,24 +41,24 @@ const login=async(req,res,next)=>{
         if(!passwordmatch) return res.status(400).send({message:`Password doesn't match`})
         return res.status(200).send({message:`Logged in successfully`})
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
 
-const getAll=async(req,res,next)=>{
+const getAll=async(req,res)=>{
     try{
         const query=`SELECT * FROM users`
         const {rows}=await pool.query(query)
         return res.status(200).send(rows)
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
 
 
-const getOne=async(req,res,next)=>{
+const getOne=async(req,res)=>{
     try{
         const id=req.params.id
         const all=(await pool.query(`SELECT * FROM users`,)).rows
@@ -68,11 +67,11 @@ const getOne=async(req,res,next)=>{
         const user=all[userIndex]
         return res.status(200).send(user)
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
-const update=async(req,res,next)=>{
+const update=async(req,res)=>{
     try{
         const id=req.params.id
         const all=(await pool.query(`SELECT * FROM users`,)).rows
@@ -87,12 +86,12 @@ const update=async(req,res,next)=>{
         const {rows}=await pool.query(query,[...values,id])
         return res.status(200).send({message:`${id} user updated successfully`})
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
 
-const deleteUser=async(req,res,next)=>{
+const deleteUser=async(req,res)=>{
     try{
         const id=req.params.id
         const user=await pool.query(`SELECT * FROM users  WHERE id=$1`,[id])
@@ -101,7 +100,7 @@ const deleteUser=async(req,res,next)=>{
         const {rows}=await pool.query(query,[id])
         return res.status(200).send({message:`${id} user deleted from table`})
     }catch(err){
-        return next(err)
+        throw new Error(err)
     }
 }
 
