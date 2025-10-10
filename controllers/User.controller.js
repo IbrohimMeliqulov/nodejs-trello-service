@@ -14,9 +14,6 @@ const setup =async (req,res,next)=>{
 
 const register=async(req,res)=>{
     try{
-        // const {error,value}=RegisterUser(req.body)
-        // if(error) return res.status(422).send(error.details[0].message)
-        // const {name,email,password}=value
         const {name,email,password}=req.body
         const hashPassword=await bcrypt.hash(password,10)
         const {rows}=await pool.query(`INSERT INTO users(name,email,password) VALUES($1,$2,$3) RETURNING*`,[name,email,hashPassword])
@@ -77,8 +74,6 @@ const update=async(req,res)=>{
         const all=(await pool.query(`SELECT * FROM users`,)).rows
         const userIndex=all.findIndex(user=>user.id===+id)
         if(userIndex===-1) return res.status(400).send({message:`${id} not found`})
-        const {error,value}=UpdateUservalidation(req.body)
-        if(error) return res.status(422).send(error.details[0].message)
         const keys=Object.keys(req.body)
         const values=Object.values(req.body)
         let Setquery=keys.map((key,i)=>`${key}=$${i+1}`).join(",")

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS boards(
 CREATE TABLE IF NOT EXISTS columns(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(120) NOT NULL,
-    order INT,
+    "order" INT,
     board_id UUID REFERENCES boards(id) ON DELETE CASCADE
 )
 
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS columns(
 CREATE TABLE IF NOT EXISTS tasks(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(120) NOT NULL,
-    order INT,
+    "order" INT,
     description TEXT,
-    user_id INT REFERENCES users(id) ON DELETE SET NULL,
-    board_id INT REFERENCES boards(id) ON DELETE CASCADE,
-    column_id INT REFERENCES columns(id) ON DELETE CASCADE
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    board_id UUID REFERENCES boards(id) ON DELETE CASCADE,
+    column_id UUID REFERENCES columns(id) ON DELETE CASCADE
 );
