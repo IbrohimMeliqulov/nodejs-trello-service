@@ -1,5 +1,5 @@
 import pool from "../config/database.js";
-import {  GetAll } from "../helpers/utils.js";
+import {  DeleteFromtable, GetAll, GetOne, Updatetable } from "../helpers/utils.js";
 
 export const BoardController={
     post:async function(req,res){
@@ -24,12 +24,9 @@ export const BoardController={
     getOne:async function(req,res){
         try{    
             const id=req.params.id
-            const all=await GetAll("boards")
-            const boardIndex=all.findIndex(board=>board.id===id)
-            if(boardIndex===-1) return res.status(404).send({message:`${id} not found`})
-            const query=`SELECT * FROM boards WHERE id=$1`
-            const {rows}=await pool.query(query,[id])
-            return res.status(200).send(rows)
+            const tablename="boards"
+            const result=await GetOne(tablename,id,res)
+            return result
         }catch(err){
             throw new Error(err)
         }
@@ -37,15 +34,8 @@ export const BoardController={
     put:async function (req,res){
         try{
             const id=req.params.id
-            const result=await GetAll('boards')
-            const boardIndex=result.findIndex(board=>board.id===id)
-            if(boardIndex===-1) return res.status(400).send({message:`${id} not found`})
-            const keys=Object.keys(req.body)
-            const values=Object.values(req.body)
-            let setquery=keys.map((key,i)=>`${key}=$${i+1}`).join(",")
-            const query=`UPDATE boards SET ${setquery} WHERE id=$${keys.length+1} RETURNING *`
-            const {rows}=await pool.query(query,[...values,id])
-            return res.status(200).send({message:`${rows}`})
+            const result=await Updatetable("boards",id,req,res)
+            return result
         }catch(err){
             throw new Error(err)
         }
@@ -53,12 +43,8 @@ export const BoardController={
     delete:async function(req,res){
         try{
             const id=req.params.id
-            const all=await GetAll("boards") 
-            const boardIndex=all.findIndex(board=>board.id===id)
-            if(boardIndex===-1) return res.status(404).send({message:`${id} not found`})
-            const query=`DELETE FROM boards WHERE id=$1`
-            const {rows}=await pool.query(query,[id])
-            return res.status(200).send({message:`${id} deleted from table`})
+            const result=await DeleteFromtable("boards",id,res) 
+            return result
         }catch(err){
             throw new Error(err)
         }

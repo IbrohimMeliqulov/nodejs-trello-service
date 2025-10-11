@@ -1,6 +1,5 @@
 import pool from "../config/database.js";
-import { deletefromtable, GetAll } from "../helpers/utils.js";
-import { getAll } from "./User.controller.js";
+import {  DeleteFromtable, GetAll, GetOne, Updatetable } from "../helpers/utils.js";
 
 export const ColumnController = {
     getAllColumns: async function (req, res) {
@@ -14,18 +13,18 @@ export const ColumnController = {
     getOneColumn: async function (req, res) {
         try {
             const id = req.params.id
-            const tablename = "columns"
-            const respond = await GetOnefromtable(tablename, id)
-            return respond
+            const tablename="columns"
+            const result=await GetOne(tablename,id,res)
+            return result
         } catch (err) {
             throw new Error(err)
         }
     },
     post: async function (req, res) {
         try {
-            const { title, order, user_id } = req.body
-            const query = `INSERT INTO columns(title,"order",user_id) VALUES($1,$2,$3) RETURNING*`
-            const { rows } = await pool.query(query, [title, order, user_id])
+            const { title, order_index, board_id } = req.body
+            const query = `INSERT INTO columns(title,order_index,board_id) VALUES($1,$2,$3) RETURNING*`
+            const { rows } = await pool.query(query, [title, order_index,board_id])
             return res.status(200).send(rows)
         } catch (err) {
             throw new Error(err)
@@ -34,15 +33,8 @@ export const ColumnController = {
     put: async function (req, res) {
         try {
             const id = req.params.id
-            const all = await getAll("columns")
-            const columnIndex = findIndex(column => column.id === id)
-            if (columnIndex === 1) return res.status(404).send({ message: `${id} not found` })
-            const keys = Object.keys(req.body)
-            const values = Object.values(req.body)
-            let setquery = keys.map((key, i) => `${key}=$${i + 1}`).join(",")
-            const query = `UPDATE columns SET ${setquery} WHERE id=$${keys.length + 1} RETURNING*`
-            const { rows } = await pool.query(query, [...values, id])
-            return res.status(200).send({ message: `${id} column updated successfully` })
+            const result=await Updatetable("columns",id,req,res)
+            return result
         } catch (err) {
             throw new Error(err)
         }
@@ -50,9 +42,10 @@ export const ColumnController = {
     delete: async function (req, res) {
         try {
             const id = req.params.id
-            const tablename = "columns"
-            const respond = await deletefromtable(tablename, id)
-            return respond
+            const tablename="columns"
+            const result=await DeleteFromtable(tablename,id,res)
+            console.log(id)
+            return result
         } catch (err) {
             throw new Error(err)
         }

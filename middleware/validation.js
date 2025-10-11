@@ -1,4 +1,4 @@
-import Joi, { number } from "joi";
+import Joi from "joi";
 
 
 
@@ -43,33 +43,33 @@ export const boardUpdatevalidation=Joi.object({
 
 export const columnsvalidation=Joi.object({
     title:Joi.string().min(2).max(50).required(),
-    order:Joi.number().required(),
-    board_id:Joi.number().required()
+    order_index:Joi.number().required(),
+    board_id:Joi.string().required()
 })
 
 export const columnsvalidationupdate=Joi.object({
     title:Joi.string().min(2).max(50),
-    order:Joi.number(),
-    board_id:Joi.number()
+    order_index:Joi.number(),
+    board_id:Joi.string()
 })
 
 
 export const taskvalidation=Joi.object({
     title:Joi.string().min(2).max(50).required(),
-    order:Joi.number().required(),
+    order_index:Joi.number().required(),
     description:Joi.string().min(10).max(50).required(),
-    user_id:Joi.number().required(),
-    board_id:Joi.number().required(),
-    column_id:Joi.number().required()
+    user_id:Joi.string().required(),
+    board_id:Joi.string().required(),
+    column_id:Joi.string().required()
 })
 
 
 
 export const taskValidationUpdate=Joi.object({
     title:Joi.string().min(2).max(50),
-    order:Joi.number(),
+    order_index:Joi.number(),
     description:Joi.string().min(10).max(50),
-    user_id:Joi.number(),
-    board_id:Joi.number(),
-    column_id:Joi.number()
+    user_id:Joi.string(),
+    board_id:Joi.string(),
+    column_id:Joi.string()
 })

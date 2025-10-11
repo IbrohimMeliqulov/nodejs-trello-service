@@ -1,5 +1,6 @@
 import pool from "../config/database.js";
 import * as bcrypt from "bcrypt";
+import { DeleteFromtable, GetOne, Updatetable } from "../helpers/utils.js";
 
 
 
@@ -58,11 +59,8 @@ const getAll=async(req,res)=>{
 const getOne=async(req,res)=>{
     try{
         const id=req.params.id
-        const all=(await pool.query(`SELECT * FROM users`,)).rows
-        const userIndex=all.findIndex(user=>user.id===+id)
-        if(userIndex===-1) return res.status(400).send({message:`${id} not found`})
-        const user=all[userIndex]
-        return res.status(200).send(user)
+        const result=await GetOne("users",id,res)
+        return result
     }catch(err){
         throw new Error(err)
     }
@@ -71,15 +69,8 @@ const getOne=async(req,res)=>{
 const update=async(req,res)=>{
     try{
         const id=req.params.id
-        const all=(await pool.query(`SELECT * FROM users`,)).rows
-        const userIndex=all.findIndex(user=>user.id===+id)
-        if(userIndex===-1) return res.status(400).send({message:`${id} not found`})
-        const keys=Object.keys(req.body)
-        const values=Object.values(req.body)
-        let Setquery=keys.map((key,i)=>`${key}=$${i+1}`).join(",")
-        const query=`UPDATE users SET ${Setquery} WHERE id=$${keys.length+1} RETURNING*`
-        const {rows}=await pool.query(query,[...values,id])
-        return res.status(200).send({message:`${id} user updated successfully`})
+        const result=await Updatetable("users",id,req,res)
+        return result
     }catch(err){
         throw new Error(err)
     }
@@ -89,11 +80,8 @@ const update=async(req,res)=>{
 const deleteUser=async(req,res)=>{
     try{
         const id=req.params.id
-        const user=await pool.query(`SELECT * FROM users  WHERE id=$1`,[id])
-        if(!user) return res.status(400).send({message:`${id} user not found`})
-        const query=`DELETE FROM users WHERE id=$1`
-        const {rows}=await pool.query(query,[id])
-        return res.status(200).send({message:`${id} user deleted from table`})
+        const result=await DeleteFromtable("users",id,res)
+        return result
     }catch(err){
         throw new Error(err)
     }

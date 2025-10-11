@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ColumnController } from "../controllers/column.controller";
-import { columnsvalidation, columnsvalidationupdate, validationfactory } from "../middleware/validation";
+import { ColumnController } from "../controllers/column.controller.js";
+import { columnsvalidation, columnsvalidationupdate, validationfactory } from "../middleware/validation.js";
 
 
 const columnRoutes=Router()
