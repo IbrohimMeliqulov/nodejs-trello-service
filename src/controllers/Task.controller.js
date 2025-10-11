@@ -1,13 +1,13 @@
 import pool from "../config/database.js";
-import { DeleteFromtable, GetAll, GetOne, Updatetable } from "../helpers/utils.js";
+import { DeleteFromtable, GetOne, pagination, Updatetable } from "../helpers/utils.js";
 
 
 
 export const TaskController={
     getAlltasks:async function(req,res){
         try{
-            const all=await GetAll("tasks")
-            return res.status(200).send(all)
+            const result=await pagination("tasks",req,res)
+            return result
         }catch(err){
             throw new Error(err)
         }
@@ -33,7 +33,7 @@ export const TaskController={
             throw new Error(err)
         }
     },
-    put:async function(req,res){
+    update:async function(req,res){
         try{
             const id=req.params.id
             const result=await Updatetable("tasks",id,req,res)

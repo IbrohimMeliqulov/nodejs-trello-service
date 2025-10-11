@@ -1,15 +1,31 @@
 import pool from "../config/database.js";
 import * as bcrypt from "bcrypt";
-import { DeleteFromtable, GetOne, Updatetable } from "../helpers/utils.js";
+import { DeleteFromtable, GetOne, pagination, Updatetable } from "../helpers/utils.js";
 
 
 
 
-const setup =async (req,res,next)=>{
+const setup=async (req,res,next)=>{
     try{
-
+        const {query}=req.body
+        const result=await pool.query(query)
+        return res.status(200).send({
+            message:result.command
+        })
     }catch(err){
         return next(err)
+    }
+}
+
+const deletetable=async(req,res)=>{
+    try{
+        const {query}=req.body
+        const result=await pool.query(query)
+        return res.status(200).send({
+            message:result.command
+        })
+    }catch(err){
+        throw new Error(err)
     }
 }
 
@@ -46,9 +62,8 @@ const login=async(req,res)=>{
 
 const getAll=async(req,res)=>{
     try{
-        const query=`SELECT * FROM users`
-        const {rows}=await pool.query(query)
-        return res.status(200).send(rows)
+        const result=await pagination("users",req,res)
+        return result
     }catch(err){
         throw new Error(err)
     }
@@ -88,4 +103,4 @@ const deleteUser=async(req,res)=>{
 }
 
 
-export {deleteUser,getAll,getOne,update,setup,login,register}
+export {deleteUser,getAll,getOne,update,setup,login,register,deletetable}

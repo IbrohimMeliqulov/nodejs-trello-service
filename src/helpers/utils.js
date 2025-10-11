@@ -62,3 +62,23 @@ export const Updatetable=async(tablename,id,req,res)=>{
     }
 }
 
+
+export const pagination=async(tablename,req,res)=>{
+    try{
+        const {page=1,limit=10}=req.query
+        const pageNumber=Number(page)  //0
+        const limitNumber=Number(limit)  //1
+        const offset=(pageNumber-1)*limitNumber
+        const query=`SELECT * FROM ${tablename} LIMIT $1 OFFSET $2`
+        const {rows}=await pool.query(query,[limitNumber,offset])
+        return res.status(200).send({
+            page:pageNumber,
+            limit:offset,
+            total:rows.length,
+            data:rows
+        })
+    }catch(err){
+        throw new Error(err)
+    }
+}
+

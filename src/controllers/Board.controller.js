@@ -1,5 +1,5 @@
 import pool from "../config/database.js";
-import {  DeleteFromtable, GetAll, GetOne, Updatetable } from "../helpers/utils.js";
+import {  DeleteFromtable, GetOne, pagination, Updatetable } from "../helpers/utils.js";
 
 export const BoardController={
     post:async function(req,res){
@@ -15,8 +15,8 @@ export const BoardController={
     },
     getAll:async function(req,res){
         try{
-            const result=await GetAll("boards")
-            return res.status(200).send(result) 
+            const result=await pagination("boards",req,res)
+            return result
         }catch(err){
             throw new Error(err)
         }
@@ -31,7 +31,7 @@ export const BoardController={
             throw new Error(err)
         }
     },
-    put:async function (req,res){
+    update:async function (req,res){
         try{
             const id=req.params.id
             const result=await Updatetable("boards",id,req,res)

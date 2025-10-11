@@ -7,7 +7,7 @@ const taskRoutes=Router()
 taskRoutes.get("/",TaskController.getAlltasks)
 taskRoutes.get("/:id",TaskController.getOneTask)
 taskRoutes.post("/",validationfactory(taskvalidation),TaskController.post)
-taskRoutes.put("/:id",validationfactory(taskValidationUpdate),TaskController.put)
+taskRoutes.put("/:id",validationfactory(taskValidationUpdate),TaskController.update)
 taskRoutes.delete("/:id",TaskController.delete)
 
 

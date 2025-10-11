@@ -8,7 +8,7 @@ const columnRoutes=Router()
 columnRoutes.get("/",ColumnController.getAllColumns)
 columnRoutes.get("/:id",ColumnController.getOneColumn)
 columnRoutes.post("/",validationfactory(columnsvalidation),ColumnController.post)
-columnRoutes.put("/:id",validationfactory(columnsvalidationupdate),ColumnController.put)
+columnRoutes.put("/:id",validationfactory(columnsvalidationupdate),ColumnController.update)
 columnRoutes.delete("/:id",ColumnController.delete)
 
 

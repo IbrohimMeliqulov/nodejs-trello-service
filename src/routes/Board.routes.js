@@ -8,7 +8,7 @@ const BoardRoutes=Router()
 BoardRoutes.get("/",BoardController.getAll)
 BoardRoutes.get("/:id",BoardController.getOne)
 BoardRoutes.post("/",validationfactory(boardValidation),BoardController.post)
-BoardRoutes.put("/:id",validationfactory(boardUpdatevalidation),BoardController.put)
+BoardRoutes.put("/:id",validationfactory(boardUpdatevalidation),BoardController.update)
 BoardRoutes.delete("/:id",BoardController.delete)
 
 

@@ -1,4 +1,4 @@
-const ErrorHandler=(err,req,res,next)=>{
+const ErrorHandler=(err,req,res)=>{
     console.error(err)
     const status=err.status||500
     let message="Internal Server Error"
