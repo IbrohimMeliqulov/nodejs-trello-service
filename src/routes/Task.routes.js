@@ -2,7 +2,7 @@ import { Router } from "express";
 import { TaskController } from "../controllers/Task.controller.js";
 import { taskvalidation, taskValidationUpdate, validationfactory } from "../middleware/validation.js";
 
-const taskRoutes=Router()
+const taskRoutes=Router({mergeParams:true})
 
 taskRoutes.get("/",TaskController.getAlltasks)
 taskRoutes.get("/:id",TaskController.getOneTask)
