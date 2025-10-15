@@ -5,12 +5,12 @@ import taskRoutes from "./Task.routes.js";
 import columnRoutes from "./column.routes.js";
 
 
-const MainRouter=Router({mergeParams:true})
+const MainRouter = Router({ mergeParams: true })
 
-MainRouter.use("/users",UserRoutes)
-MainRouter.use("/boards",BoardRoutes)
-MainRouter.use("/boards/:boardId/tasks",taskRoutes)
-MainRouter.use("/columns",columnRoutes)
+MainRouter.use("/users", UserRoutes)
+MainRouter.use("/boards", BoardRoutes)
+MainRouter.use("/boards/:boardId/tasks", taskRoutes)
+MainRouter.use("/columns", columnRoutes)
 
 
 export default MainRouter
