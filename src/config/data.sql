@@ -9,8 +9,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS boards (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
     title VARCHAR(120) NOT NULL UNIQUE,
+    slug VARCHAR(120),
     user_id UUID REFERENCES users (id) ON DELETE SET NULL
 );
+
+
 
 CREATE TABLE IF NOT EXISTS columns (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
@@ -18,6 +21,8 @@ CREATE TABLE IF NOT EXISTS columns (
     order_index INT,
     board_id UUID REFERENCES boards (id) ON DELETE CASCADE
 )
+
+
 
 CREATE TABLE IF NOT EXISTS tasks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),

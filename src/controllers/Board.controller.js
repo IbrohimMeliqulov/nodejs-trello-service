@@ -1,14 +1,16 @@
 import pool from "../config/database.js";
+import { slugify } from "../helpers/slugify.js";
 import { Maincontroller } from "../helpers/utils.js";
 
 export const BoardController = {
     post: async function (req, res, next) {
         try {
             const { title, user_id } = req.body
+            const slug=slugify(title)
             const one = await pool.query(`SELECT * FROM users WHERE id=$1`, [user_id])
             if (one.rows.length === 0) return res.status(404).send({ message: `${user_id} user not found` })
-            const values = [title, user_id]
-            const query = `INSERT INTO boards(title,user_id) VALUES($1,$2) RETURNING*`
+            const values = [title, slug,user_id]
+            const query = `INSERT INTO boards(title,slug,user_id) VALUES($1,$2,$3) RETURNING*`
             const { rows } = await pool.query(query, values)
             return res.status(200).send(rows)
         } catch (err) {

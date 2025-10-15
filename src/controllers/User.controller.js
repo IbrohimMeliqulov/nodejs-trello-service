@@ -133,6 +133,7 @@ const deleteUser = async (req, res, next) => {
     try {
         const id = req.params.id
         const result = await Maincontroller.Delete(res, "users", id, next)
+        return result
     } catch (err) {
         return next(err)
     }
