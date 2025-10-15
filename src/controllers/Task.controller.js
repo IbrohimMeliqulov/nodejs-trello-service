@@ -33,18 +33,18 @@ export const TaskController = {
             return next(err)
         }
     },
-    getOnetask: async function (req, res) {
+    getOnetask: async function (req, res, next) {
         try {
             const { id, boardId } = req.params
-            const one = await pool.query(`SELECT * FROM tasks WHERE board_id=$1`)
+            const one = await pool.query(`SELECT * FROM tasks WHERE board_id=$1`, [boardId])
             if (one.rows.length === 0) return res.status(404).send({ message: `${boardId} with this id there are not any tasks` })
-            const { rows } = await pool.query(`SELECT * FROM tasks WHERE id=$1 ANd board_id=$2`, [id, boardId])
+            const { rows } = await pool.query(`SELECT * FROM tasks WHERE id=$1 AND board_id=$2`, [id, boardId])
             return res.status(200).send(rows[0])
         } catch (err) {
             return next(err)
         }
     },
-    post: async function (req, res) {
+    post: async function (req, res, next) {
         try {
             const { title, order_index, description, user_id, board_id, column_id } = req.body
             const query = `INSERT INTO tasks(title,order_index,description,user_id,board_id,column_id) VALUES($1,$2,$3,$4,$5,$6) RETURNING*`
@@ -56,7 +56,7 @@ export const TaskController = {
             return next(err)
         }
     },
-    update: async function (req, res) {
+    update: async function (req, res, next) {
         try {
             const { boardId, id } = req.params
             const result = await pool.query("SELECT * FROM tasks WHERE board_id=$1 and id=$2", [boardId, id])
@@ -71,7 +71,7 @@ export const TaskController = {
             return next(err)
         }
     },
-    delete: async function (req, res) {
+    delete: async function (req, res, next) {
         try {
             const { boardId, id } = req.params
             const result = await pool.query("SELECT * FROM tasks WHERE board_id=$1 and id=$2", [boardId, id])

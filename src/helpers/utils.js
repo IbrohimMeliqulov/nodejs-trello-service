@@ -35,7 +35,7 @@ export const Maincontroller = {
     Findone: async function (res, tablename, id, next) {
         try {
             const { rows } = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
-            if (!rows) return res.status(404).send({ message: `${id} not found` })
+            if (rows.length === 0) return res.status(404).send({ message: `${id} not found` })
             return res.status(200).send({
                 message: `${id} found`,
                 data: rows[0]
@@ -44,11 +44,11 @@ export const Maincontroller = {
             return next(err)
         }
     },
-    Update: async function (req, res, tablename, id, next) {
+    Update: async function (req, res, tablename, next) {
         try {
             const id = req.params.id
             const one = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
-            if (!one) return res.status(404).send({ message: `${id} not found` })
+            if (one.rows.length === 0) return res.status(404).send({ message: `${id} not found` })
             const keys = Object.keys(req.body)
             const values = Object.values(req.body)
             let setquery = keys.map((key, i) => `${key}=$${i + 1}`).join(",")
@@ -65,7 +65,7 @@ export const Maincontroller = {
     Delete: async function (res, tablename, id, next) {
         try {
             const one = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
-            if (!one) return res.status(404).send({ message: `${id} not found` })
+            if (one.rows.length === 0) return res.status(404).send({ message: `${id} not found` })
             const { rows } = await pool.query(`DELETE FROM ${tablename} WHERE id=$1`, [id])
             return res.status(200).send({
                 message: `${id} deleted from table`,

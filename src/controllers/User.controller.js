@@ -29,7 +29,7 @@ const deletetable = async (req, res, next) => {
     }
 }
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     try {
         const { name, email, password } = req.body
         const hashPassword = await bcrypt.hash(password, 10)
@@ -95,10 +95,10 @@ const getOne = async (req, res, next) => {
     try {
         const id = req.params.id
         const { rows } = await pool.query(`SELECT id,name,email FROM users WHERE id=$1`, [id])
-        if (!rows) return res.status(404).send({ message: `${id} not found` })
+        if (rows.length === 0) return res.status(404).send({ message: `${id} not found` })
         return res.status(200).send({
             message: `${id} found`,
-            data: rows[0]
+            data: rows
         })
     } catch (err) {
         return next(err)

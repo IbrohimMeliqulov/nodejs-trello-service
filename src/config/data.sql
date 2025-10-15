@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS boards (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-    title VARCHAR(120) NOT NULL,
+    title VARCHAR(120) NOT NULL UNIQUE,
     user_id UUID REFERENCES users (id) ON DELETE SET NULL
 );
 
