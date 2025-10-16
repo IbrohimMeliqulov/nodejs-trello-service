@@ -32,7 +32,7 @@ export const Maincontroller = {
             return next(err)
         }
     },
-    Findone: async function (res, tablename, id, next) {
+    findone: async function (res, tablename, id, next) {
         try {
             const { rows } = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
             if (rows.length === 0) return res.status(404).send({ message: `${id} not found` })
@@ -44,9 +44,10 @@ export const Maincontroller = {
             return next(err)
         }
     },
-    Update: async function (req, res, tablename, next) {
+    update: async function (req, res, tablename, next) {
         try {
             const id = req.params.id
+            console.log(req.params)
             const one = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
             if (one.rows.length === 0) return res.status(404).send({ message: `${id} not found` })
             const keys = Object.keys(req.body)
@@ -62,7 +63,7 @@ export const Maincontroller = {
             return next(err)
         }
     },
-    Delete: async function (res, tablename, id, next) {
+    delete: async function (res, tablename, id, next) {
         try {
             const one = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
             if (one.rows.length === 0) return res.status(404).send({ message: `${id} not found` })

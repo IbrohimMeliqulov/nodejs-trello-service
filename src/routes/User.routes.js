@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { deletetable, deleteUser, getAll, getOne, login, register, setup, update } from "../controllers/User.controller.js";
 import { validationfactory } from "../middleware/validation.js";
-import { RegisterUser, UpdateUservalidation } from "../middleware/uservalidation.js";
+import { RegisterUser, UpdateUservalidation } from "../validation/uservalidation.js";
+import { authenticateToken } from "../middleware/authorization.js";
 
 
 const UserRoutes = Router()
 
-UserRoutes.get("/", getAll)
+UserRoutes.get("/",authenticateToken, getAll)
 UserRoutes.post("/setup", setup)
 UserRoutes.post("/abort", deletetable)
 UserRoutes.post("/login", login)

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { TaskController } from "../controllers/Task.controller.js";
 import { validationfactory } from "../middleware/validation.js";
-import { taskvalidation, taskValidationUpdate } from "../middleware/taskvalidation.js";
+import { taskvalidation, taskValidationUpdate } from "../validation/taskvalidation.js";
 
 
 const taskRoutes = Router({ mergeParams: true })

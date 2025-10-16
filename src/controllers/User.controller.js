@@ -1,6 +1,7 @@
 import pool from "../config/database.js";
 import * as bcrypt from "bcrypt";
 import { Maincontroller } from "../helpers/utils.js";
+import { jwtTokens } from "../middleware/verfiyJWT.js";
 
 
 
@@ -52,8 +53,13 @@ const login = async (req, res, next) => {
         const user = rows[0]
         if (!user) return res.status(404).send({ message: `Not found,Please register` })
         const passwordmatch = await bcrypt.compare(password, user.password)
-        if (!passwordmatch) return res.status(400).send({ message: `Password doesn't match` })
-        return res.status(200).send({ message: `Logged in successfully` })
+        if (!passwordmatch) return res.status(400).send({ message: `Password doesn't match` }) 
+        let tokens=jwtTokens(user)
+        res.cookie("refresh_token",tokens.refreshToken,{httpOnly:true})
+        return res.status(200).send({
+            message:`You logged in successfully`,
+            tokens:tokens
+        })
     } catch (err) {
         return next(err)
     }
@@ -117,7 +123,7 @@ const update = async (req, res, next) => {
         const password = values[index]
         const hashPassword = await bcrypt.hash(password, 10)
         values[index] = hashPassword
-        const query = `UPDATE users SET ${setquery} WHERE id=$${keys.length + 1} RETURNING id,name,email,password`
+        const query = `UPDATE users SET ${setquery} WHERE id=$${keys.length + 1} RETURNING id,name,email`
         const { rows } = await pool.query(query, [...values, id])
         return res.status(201).send({
             message: `Successfully updated`,
@@ -132,7 +138,7 @@ const update = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try {
         const id = req.params.id
-        const result = await Maincontroller.Delete(res, "users", id, next)
+        const result = await Maincontroller.delete(res, "users", id, next)
         return result
     } catch (err) {
         return next(err)

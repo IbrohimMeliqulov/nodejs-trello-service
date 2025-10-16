@@ -7,6 +7,8 @@ export const BoardController = {
         try {
             const { title, user_id } = req.body
             const slug=slugify(title)
+            const search=await pool.query(`SELECT * FROM boards WHERE LOWER(title)=$1`,[title.toLowerCase()])
+            if(search) return res.status(404).send({message:`This title ${title} already exists`})
             const one = await pool.query(`SELECT * FROM users WHERE id=$1`, [user_id])
             if (one.rows.length === 0) return res.status(404).send({ message: `${user_id} user not found` })
             const values = [title, slug,user_id]
@@ -28,7 +30,7 @@ export const BoardController = {
     getOne: async function (req, res, next) {
         try {
             const id = req.params.id
-            const result = await Maincontroller.Findone(res, "boards", id, next)
+            const result = await Maincontroller.findone(res, "boards", id, next)
             return result
         } catch (err) {
             return next(err)
@@ -37,7 +39,7 @@ export const BoardController = {
     update: async function (req, res, next) {
         try {
             const id = req.params.id
-            const result = await Maincontroller.Update(req, res, "boards", id)
+            const result = await Maincontroller.update(req, res, "boards", next)
             return result
         } catch (err) {
             return next(err)
@@ -46,7 +48,7 @@ export const BoardController = {
     delete: async function (req, res, next) {
         try {
             const id = req.params.id
-            const result = await Maincontroller.Delete(res, "boards", id, next)
+            const result = await Maincontroller.delete(res, "boards", id, next)
             return result
         } catch (err) {
             return next(err)

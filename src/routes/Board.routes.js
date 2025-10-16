@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BoardController } from "../controllers/Board.controller.js";
 import { validationfactory } from "../middleware/validation.js";
-import { boardUpdatevalidation, boardValidation } from "../middleware/boardvalidation.js";
+import { boardUpdatevalidation, boardValidation } from "../validation/boardvalidation.js";
 
 
 

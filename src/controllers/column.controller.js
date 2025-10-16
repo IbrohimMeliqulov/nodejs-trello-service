@@ -13,8 +13,21 @@ export const ColumnController = {
     getOneColumn: async function (req, res, next) {
         try {
             const id = req.params.id
-            const result = await Maincontroller.Findone(res, "columns", id, next)
+            const result = await Maincontroller.findone(res, "columns", id, next)
             return result
+        } catch (err) {
+            return next(err)
+        }
+    },
+    getColumnsByboardId: async function (req, res, next) {
+        try {
+            const { board_id } = req.params
+            console.log(board_id)
+            const { rows } = await pool.query(`SELECT * FROM columns WHERE board_id=$1`, [board_id])
+            if (rows.length === 0) return res.status(404).send({ message: `There aren't columns related to this board_id ${board_id}` })
+            return res.status(200).send({
+                data: rows
+            })
         } catch (err) {
             return next(err)
         }
@@ -33,7 +46,7 @@ export const ColumnController = {
     },
     update: async function (req, res, next) {
         try {
-            const result = await Maincontroller.Update(req, res, "columns", next)
+            const result = await Maincontroller.update(req, res, "columns", next)
             return result
         } catch (err) {
             return next(err)
@@ -42,7 +55,7 @@ export const ColumnController = {
     delete: async function (req, res, next) {
         try {
             const id = req.params.id
-            const result = await Maincontroller.Delete(res, "columns", id, next)
+            const result = await Maincontroller.delete(res, "columns", id, next)
             return result
         } catch (err) {
             return next(err)
