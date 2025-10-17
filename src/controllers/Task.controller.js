@@ -85,5 +85,41 @@ export const TaskController = {
         } catch (err) {
             return next(err)
         }
+    },
+    getAlltaskByUserId:async function(req,res,next){
+        try{
+            const {user_id}=req.params
+            console.log(user_id)
+            const one=await pool.query(`SELECT * FROM users WHERE id=$1`,[user_id])
+            if(one.rows.length===0)return res.status(404).send({message:`${user_id} user not found`})
+            const {rows}=await pool.query(`SELECT * FROM tasks WHERE user_id=$1`,[user_id])
+            const data=rows[0]
+            const column_id=data.column_id
+            const result=await pool.query(`SELECT t.id,t.title,t.order_index,t.description,t.user_id,t.board_id,t.column_id, c.id,c.title,t.order_index,c.board_id FROM tasks AS t INNER JOIN columns AS c ON t.column_id=c.id WHERE t.column_id=$1`,[column_id])
+            return res.status(201).send({
+                message:`${user_id} task found`,
+                data:result.rows})
+        }catch(err){
+            return next(err)
+        }
+    },
+    changeTasksOrder:async function(req,res,next){
+        try{
+            const {boardId,task_id}=req.params
+            const {order_index,taskId}=req.body
+            const order=await pool.query(`SELECT order_index FROM tasks  WHERE id=$1`,[task_id])
+            const query=`UPDATE tasks SET order_index=$1 WHERE id=$2 RETURNING*`
+            const result=await pool.query(query,[order_index,task_id])
+            const one=await pool.query(`SELECT order_index FROM tasks WHERE id=$1`,[taskId])
+            const older=one.rows[0]
+            if(!older)return res.status(404).send({message:`${taskId} not found`})
+            await pool.query(`UPDATE tasks SET order_index=$1 WHERE id=$2 RETURNING*`,[older.order_index,taskId])
+            return res.status(200).send({
+                message:`the order changed`,
+                data:result.rows
+            })
+        }catch(err){
+            return next(err)
+        }
     }
 }

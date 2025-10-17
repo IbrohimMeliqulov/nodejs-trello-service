@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS boards (
 );
 
 
-
 CREATE TABLE IF NOT EXISTS columns (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
     title VARCHAR(120) NOT NULL,

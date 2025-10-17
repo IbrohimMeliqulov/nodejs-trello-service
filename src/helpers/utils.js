@@ -1,4 +1,5 @@
 import pool from "../config/database.js";
+import format from "pg-format"
 
 
 
@@ -34,7 +35,8 @@ export const Maincontroller = {
     },
     findone: async function (res, tablename, id, next) {
         try {
-            const { rows } = await pool.query(`SELECT * FROM ${tablename} WHERE id=$1`, [id])
+            const query = format(`SELECT * FROM %I WHERE id=$1`, [tablename])
+            const {rows}=await pool.query(query,[id])
             if (rows.length === 0) return res.status(404).send({ message: `${id} not found` })
             return res.status(200).send({
                 message: `${id} found`,

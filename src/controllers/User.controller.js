@@ -115,7 +115,7 @@ const update = async (req, res, next) => {
     try {
         const id = req.params.id
         const one = await pool.query(`SELECT * FROM users WHERE id=$1`, [id])
-        if (!one) return res.status(404).send({ message: `${id} not found` })
+        if (one.rows.length===0) return res.status(404).send({ message: `${id} not found` })
         const keys = Object.keys(req.body)
         const values = Object.values(req.body)
         let setquery = keys.map((key, i) => `${key}=$${i + 1}`).join(",")
